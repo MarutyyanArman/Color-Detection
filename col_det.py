@@ -1,24 +1,29 @@
 import cv2 as cv
 import numpy as np
 
-# Define a function that does nothing (it is used as a placeholder for trackbars)
 def nothing(x):
     pass
 
 # Open a video file or capture video from the webcam
-# cap = cv.VideoCapture(0)  # Uncomment this to capture from webcam
-cap = cv.VideoCapture("C:\\Users\\MSI\\Desktop\\Project\\Videos\\test_video.mp4")  # Comment this for webcam, use this for a video file
+# cap = cv.VideoCapture(0)  # webcam
+cap = cv.VideoCapture(r"C:\Users\MSI\Desktop\Color Detection\test_video.mp4")  # a video file
+if not cap.isOpened():
+    print("Error: Could not open video.")
+    exit()
 
 while True:
     # Read a frame from the video capture
     ret, frame = cap.read()
+    if not ret:
+        print("Error: Failed to grab frame.")
+        break
 
     # Convert the frame from BGR to HSV color space for better color detection
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
     # Define lower and upper bounds for the color range to detect (in this case, blue)
-    l_b = np.array([110, 50, 50])  # Lower bound of blue in HSV
-    u_b = np.array([130, 255, 255])  # Upper bound of blue in HSV
+    l_b = np.array([100, 50, 50])  # Lower bound of blue in HSV
+    u_b = np.array([140, 255, 255])  # Upper bound of blue in HSV
 
     # Create a mask that highlights only the pixels within the specified color range
     mask = cv.inRange(hsv, l_b, u_b)
@@ -33,10 +38,8 @@ while True:
     # Display the result (only the color detected areas)
     cv.imshow('res', res)
 
-    # Wait for a key press for 1 ms; this helps with the video display
     cv.waitKey(1)
 
-# Release the video capture object and close all windows when done
 cap.release()
 cv.destroyAllWindows()
 
